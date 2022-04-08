@@ -5,38 +5,64 @@ var polyline = require("google-polyline");
 var options = {
   port: 1883,
   clientId: "mqttjs_" + Math.random().toString(16).substr(2, 8),
-  username: "", //username
-  password: "", //password
+  username: "username", //username
+  password: "password", //password
 };
 
-var client = mqtt.connect("tcp://35.185.178.47", options);
+var client = mqtt.connect("tcp://mqtt.mypetgo.com", options);
 
 var template = {
   header: {
-    did: "24:6F:28:8F:74:28", //id
+    did: "7C:9E:BD:6E:89:8C", //device code
     dateTime: "",
+    net: "W",
   },
   data: {
     lat: 16.0742,
     lon: 108.17687,
   },
 };
+
+var templatePetHealth = {
+  header: {
+    did: "7C:9E:BD:6E:89:8C", //device code
+    dateTime: "",
+    net: "W",
+  },
+  data: {
+    petTemp: 15,
+    envTemp: 15,
+    bat: 69,
+    steps: 15,
+    netInfo: {
+      ssid: "OPPO Tom Reno2",
+      ip: "192.168.127.234",
+      mac: "FE:11:7C:49:91:E2",
+      rssi: -42,
+    },
+  },
+};
+
 // Use this link to create route
 // https://developers.google.com/maps/documentation/utilities/polylineutility
 client.on("connect", function () {
   var routes = polyline.decode(
-    "{y`aBogjsSaQ`@gPj@`A`SsBzNhInFzLjLHhAvO{Dy@gJGgI{B_Jx@sL"
+    "{{{`Bc{tsSGWYHe@PSo@Qq@Qo@Qs@`@SZQXKPKTMPj@Ph@P^JZJXJ`@e@NULEj@"
   );
-  // var routes = polyline.decode( 'i{`aBegjsSUAEGG@K@GCM@G?GAE@EAG@EAG?E@CAB?M?E?G?E?E?E?E?E?E?E@G@G?A@E@A?A?A@C?A?A?A?A?A?A?A?A?A@C?A?A?A?A?A?A?A?A??A@@E?A?A?A?A?A?A?A?A?A?A?A?A@A?A?A?A???AAA?A?A?A?A@AAA?A?A?AAA?A?A?A?A?A?A?A?oBD_CPiBRyBD}@HaAD]@a@So@PEjK?tAGrDWdDwAtCf@bClApApCfBvBdBhBv@dA~Bj@d@jBrAn@p@h@j@bArApBk@fAs@`Bc@t@i@zADz@Gr@_@@q@f@U?g@Ue@IYMWGYKo@C]AYAQCOA[Ic@?_@@_A?O?Q?O?U?KCM@MAO?IAM?QAQA[?ICM?MAQAW?MCc@?G?K?YCO?W@QCSAUEMBYCQCg@AS?]Cc@A_@Aa@BQAQ?O?UEMCOAM@S?SCO?K@IGOAO?Y?aA?{@ByAgBG' )
   routes.forEach(pushMessage);
 });
 
 function pushMessage(item, index) {
   setTimeout(() => {
+    let dateTime = moment().toISOString();
     template.data.lat = item[0];
     template.data.lon = item[1];
-    template.header.dateTime = moment().toISOString();
+    template.header.dateTime = dateTime;
     console.log(JSON.stringify(template));
     client.publish("petcare/server/gps", JSON.stringify(template));
-  }, 4000 * index);
+
+    // templatePetHealth.header.dateTime = dateTime;
+    // templatePetHealth.data.steps = Math.round(Math.random() * (25 - 10) + 10); //min max
+    // client.publish("petcare/server/health", JSON.stringify(templatePetHealth));
+  }, 5000 * index);
 }
