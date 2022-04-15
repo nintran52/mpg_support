@@ -13,7 +13,7 @@ var client = mqtt.connect("tcp://mqtt.mypetgo.com", options);
 
 var template = {
   header: {
-    did: "7C:9E:BD:6E:89:8C", //device code
+    did: "7C:9E:BD:6E:89:9C", //device code
     dateTime: "",
     net: "W",
   },
@@ -25,20 +25,27 @@ var template = {
 
 var templatePetHealth = {
   header: {
-    did: "7C:9E:BD:6E:89:8C", //device code
-    dateTime: "",
+    did: "7C:9E:BD:6E:89:9C",
+    dateTime: "2022-04-13T09:11:13Z",
     net: "W",
   },
   data: {
-    petTemp: 15,
-    envTemp: 15,
-    bat: 69,
-    steps: 15,
+    petTemp: 29.68,
+    envTemp: 28.53,
+    bat: 79,
+    motion: 0,
+    steps: 0,
+    itchScratch: 0,
+    eatDrink: 0,
+    resting: 0,
+    sleeping: 37,
+    sitting: 0,
+    standing: 0,
     netInfo: {
-      ssid: "OPPO Tom Reno2",
-      ip: "192.168.127.234",
-      mac: "FE:11:7C:49:91:E2",
-      rssi: -42,
+      ssid: "Rhino1",
+      ip: "192.168.88.136",
+      mac: "cc:71:90:09:0d:ea",
+      rssi: -52,
     },
   },
 };
@@ -47,7 +54,7 @@ var templatePetHealth = {
 // https://developers.google.com/maps/documentation/utilities/polylineutility
 client.on("connect", function () {
   var routes = polyline.decode(
-    "{{{`Bc{tsSGWYHe@PSo@Qq@Qo@Qs@`@SZQXKPKTMPj@Ph@P^JZJXJ`@e@NULEj@"
+    "y{{`Bc{tsS?[b@Uf@SWi@Sk@[s@WaAXp@Zp@Tl@Vr@i@Zo@THX"
   );
   routes.forEach(pushMessage);
 });
@@ -61,8 +68,9 @@ function pushMessage(item, index) {
     console.log(JSON.stringify(template));
     client.publish("petcare/server/gps", JSON.stringify(template));
 
-    // templatePetHealth.header.dateTime = dateTime;
-    // templatePetHealth.data.steps = Math.round(Math.random() * (25 - 10) + 10); //min max
-    // client.publish("petcare/server/health", JSON.stringify(templatePetHealth));
-  }, 5000 * index);
+    templatePetHealth.header.dateTime = dateTime;
+    templatePetHealth.data.steps = Math.round(Math.random() * (25 - 10) + 10); //min max
+    console.log(JSON.stringify(templatePetHealth));
+    client.publish("petcare/server/health", JSON.stringify(templatePetHealth));
+  }, 7000 * index);
 }
