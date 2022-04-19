@@ -65,12 +65,12 @@ function pushMessage(item, index) {
     template.data.lat = item[0];
     template.data.lon = item[1];
     template.header.dateTime = dateTime;
-    console.log(JSON.stringify(template));
-    client.publish("petcare/server/gps", JSON.stringify(template));
+    // console.log(JSON.stringify(template));
+    client.publish("gps", JSON.stringify(template));
 
     templatePetHealth.header.dateTime = dateTime;
     templatePetHealth.data.steps = Math.round(Math.random() * (25 - 10) + 10); //min max
     console.log(JSON.stringify(templatePetHealth));
-    client.publish("petcare/server/health", JSON.stringify(templatePetHealth));
+    client.publish("health", JSON.stringify(templatePetHealth));
   }, 7000 * index);
 }
