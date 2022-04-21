@@ -9,8 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "mqtt": "^4.2.8",
     "google-polyline": "^1.0.3",
-    "moment": "^2.29.1",
-    "mqtt": "^4.2.8"
+    "moment": "^2.29.1"
   }
 }
